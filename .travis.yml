@@ -43,4 +43,4 @@ deploy:
   file: $TRAVIS_BUILD_DIR/build/**/*
   skip_cleanup: true
   on:
-    tags: true
+    repo: gitugser/shadowsocks-qt5
