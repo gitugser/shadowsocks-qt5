@@ -5,36 +5,40 @@ cache: apt
 addons:
   apt:
     sources:
-      - ubuntu-toolchain-r-test
-      - sourceline: 'ppa:hedges/qt5.5'
+    - ubuntu-toolchain-r-test
+    - sourceline: ppa:hedges/qt5.5
     packages:
-      - g++-7
-      - cmake
-      - qt55base
-      - libbotan1.10-dev
-      - libqrencode-dev
-      - libzbar-dev
-
+    - g++-7
+    - cmake
+    - qt55base
+    - libbotan1.10-dev
+    - libqrencode-dev
+    - libzbar-dev
 env:
-  - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
-
+- MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
 branches:
   only:
-    - 'master'
-
+  - master
 before_install:
-  - eval "${MATRIX_EVAL}"
-  # Use the latest libQtShadowsocks code
-  - git clone https://github.com/shadowsocks/libQtShadowsocks.git
-  - mkdir libQtShadowsocks/build
-  - cd libQtShadowsocks/build
-  - cmake .. -DCMAKE_INSTALL_PREFIX=/usr -DQt5Core_DIR="/opt/qt55/lib/cmake/Qt5Core" -DQt5Network_DIR="/opt/qt55/lib/cmake/Qt5Network" -DQt5Test_DIR="/opt/qt55/lib/cmake/Qt5Test"
-  - make
-  - sudo make install
-  - cd -
-
+- eval "${MATRIX_EVAL}"
+- git clone https://github.com/shadowsocks/libQtShadowsocks.git
+- mkdir libQtShadowsocks/build
+- cd libQtShadowsocks/build
+- cmake .. -DCMAKE_INSTALL_PREFIX=/usr -DQt5Core_DIR="/opt/qt55/lib/cmake/Qt5Core"
+  -DQt5Network_DIR="/opt/qt55/lib/cmake/Qt5Network" -DQt5Test_DIR="/opt/qt55/lib/cmake/Qt5Test"
+- make
+- sudo make install
+- cd -
 script:
-  - mkdir build && cd build
-  - cmake .. -DQt5Core_DIR="/opt/qt55/lib/cmake/Qt5Core" -DQt5Network_DIR="/opt/qt55/lib/cmake/Qt5Network" -DQt5Gui_DIR="/opt/qt55/lib/cmake/Qt5Gui" -DQt5Widgets_DIR="/opt/qt55/lib/cmake/Qt5Widgets" -DQt5DBus_DIR="/opt/qt55/lib/cmake/Qt5DBus"
-  - make
-
+- mkdir build && cd build
+- cmake .. -DQt5Core_DIR="/opt/qt55/lib/cmake/Qt5Core" -DQt5Network_DIR="/opt/qt55/lib/cmake/Qt5Network"
+  -DQt5Gui_DIR="/opt/qt55/lib/cmake/Qt5Gui" -DQt5Widgets_DIR="/opt/qt55/lib/cmake/Qt5Widgets"
+  -DQt5DBus_DIR="/opt/qt55/lib/cmake/Qt5DBus"
+- make
+deploy:
+  provider: releases
+  api_key:
+    secure: cGupfvAkxCBb8vDl6BUK7iwKrHKCAjO8/CiqqEwz7SgKDdWViekAjfj4eMg0X3jDcjab6mVIv4LIwo/TpVJD+1bAZDUT126kLfkNAoZMSNid8iFLyxKwK/3Zv7/eOWl+UnvXX9/x+f2IBlFuyu1f0YBViYeJwqmmeUCRc8G5YSvAJosUuGEtHqKG3StdoswUHzNREIpb2lBuhCVB4mMTbpcvf/6/bPa2R+RP/TsQeaKLMKVpWtvmliT/9Oz4coalUREbsr4EdPgM+82h0nPnmUfVcwSv9wubmJEtI4GDpukjrioz+JaMk3l9KoM8NuF64nWr8O6hrmIFgKY0wmyeFIYJvPjtt8G1ulvspNW35yzB20m9wlT1Gw7AYO0VOOCrAAO5vmChHnGWRIQMofxOlu6nhP+qAWK+7AQOJS6sh/WpeUGWESHatH9u0vGhrEuwMV3AqZpXUx/GQMBmq//vMZkzmcQZMdF8Uly5Y9H2j0CzgyLoAZApcaUltSknqoVMESJRd7HKSCrWuGAQ4RP7TB2IaIWOkN/rKklEALvkAbXSZIogeDtR3CuimIAFzcYMbiob+Q36mcFVwcOKZxi/mbt6XS5OcginnAQyx1lkuhXta06ejwWu6vulzbhkbENIimqV4zJ8UljTcfmWPk0a+TXnnuL+jY1RIrHtZjNIAwQ=
+  file: build/*
+  on:
+    repo: gitugser/shadowsocks-qt5
